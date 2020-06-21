@@ -74,16 +74,24 @@ public class EditActivity extends AppCompatActivity {
                 {
                     Toast.makeText(EditActivity.this, "error", Toast.LENGTH_SHORT).show();
                 } else {
-                    long price = (long) (Long.parseLong(getValueString(edtGiaTien)) * 2 * 0.95) ;
+                    long price;
                     int t = (rdoKhuHoi.isChecked())?1:0;
-                    long s = dbHelper.Update(ticket.getId(), getValueString(edtGaDi), getValueString(edtGaDen), price, t);
+                    if(t == 1)
+                    {
+                        price = (long) (Long.parseLong(getValueString(edtGiaTien)) * 2 * 0.95);
+                    } else {
+                        price = Long.parseLong(getValueString(edtGiaTien));
+                    }
+                    Ticket ticketUpt = new Ticket(ticket.getId(), getValueString(edtGaDen), getValueString(edtGaDi), price, t);
+                    //long s = dbHelper.Update(ticket.getId(), getValueString(edtGaDi), getValueString(edtGaDen), price, t);
+                    long s = dbHelper.Update(ticket.getId(), ticketUpt);
                     if (s == 0)
                     {
                         Toast.makeText(EditActivity.this, "error", Toast.LENGTH_SHORT).show();
                     } else {
-//                        Intent intent = new Intent(EditActivity.this, MainActivity.class);
-//                        startActivity(intent);
-                        finish();
+                        Intent intent = new Intent(EditActivity.this, MainActivity.class);
+                        startActivity(intent);
+
                     }
                 }
             }

@@ -53,7 +53,7 @@ public class TicketAdapter extends BaseAdapter {
             TextView textPrice = (TextView) view.findViewById(R.id.txtPrice);
             TextView textType = (TextView) view.findViewById(R.id.txtType);
 
-            String s = ticket.getGaDen() + "->" + ticket.getGaDi();
+            String s = ticket.getGaDi() + "->" + ticket.getGaDen();
             textAddr.setText(s);
             textPrice.setText(ticket.getDonGia()+ "");
             String t = (ticket.isTheLoai() == 1)?"Khứ hồi":"Một chiều";

@@ -61,14 +61,14 @@ public class MainActivity extends AppCompatActivity {
         super.onCreateContextMenu(menu, v, menuInfo);
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        dbHelper.openDB();
-        ArrayList<Ticket> tickets1 = dbHelper.getAll();
-        adapter = new TicketAdapter(tickets1, MainActivity.this);
-        listRes.setAdapter(adapter);
-    }
+//    @Override
+//    protected void onResume() {
+//        super.onResume();
+//        dbHelper.openDB();
+//        ArrayList<Ticket> tickets1 = dbHelper.getAll();
+//        adapter = new TicketAdapter(tickets1, MainActivity.this);
+//        listRes.setAdapter(adapter);
+//    }
 
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {

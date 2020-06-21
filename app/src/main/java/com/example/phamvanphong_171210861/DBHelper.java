@@ -86,13 +86,13 @@ public class DBHelper extends SQLiteOpenHelper {
         return tickets;
     }
 
-    public long Update(int id, String GaDi, String GaDen, long GiaTien, int TheLoai)
+    public long Update(int id, Ticket ticket)
     {
         ContentValues contentValues = new ContentValues();
-        contentValues.put(GADEN, GaDen);
-        contentValues.put(GADI, GaDi);
-        contentValues.put(GIATIEN, GiaTien);
-        contentValues.put(THELOAI, TheLoai);
+        contentValues.put(GADEN, ticket.getGaDen());
+        contentValues.put(GADI, ticket.getGaDi());
+        contentValues.put(GIATIEN, ticket.getDonGia());
+        contentValues.put(THELOAI, ticket.isTheLoai());
         String where = ID + " = " + id;
         return myDB.update(TABLE_NAME, contentValues, where, null);
 
