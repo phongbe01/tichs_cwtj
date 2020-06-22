@@ -1,5 +1,6 @@
 package com.example.phamvanphong_171210861;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 
@@ -7,14 +8,18 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.ContextMenu;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -25,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     ListView listRes;
     DBHelper dbHelper;
     ArrayList<Ticket> tickets;
+    EditText search;
     TicketAdapter adapter;
 
     @Override
@@ -43,6 +49,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        search = (EditText) findViewById(R.id.edSearch);
         listRes = (ListView) findViewById(R.id.listRes);
         dbHelper = new DBHelper(MainActivity.this);
         dbHelper.openDB();
@@ -52,6 +59,24 @@ public class MainActivity extends AppCompatActivity {
         adapter = new TicketAdapter(tickets, MainActivity.this);
         listRes.setAdapter(adapter);
         registerForContextMenu(listRes);
+
+        //search
+        search.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                adapter.getFilter().filter(s);
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
     }
 
     //context menu
@@ -73,16 +98,35 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onContextItemSelected(@NonNull MenuItem item) {
         final AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+        final int editPosition = info.position;
         switch (item.getItemId())
         {
             case R.id.itEdit:
-               int editPosition = info.position;
                 Toast.makeText(this, tickets.get(editPosition).isTheLoai() + "", Toast.LENGTH_SHORT).show();
                 Ticket ticket = tickets.get(editPosition);
                 Intent intent = new Intent(MainActivity.this, EditActivity.class);
                 intent.putExtra("TICKET", ticket);
                 startActivity(intent);
                 break;
+            case R.id.itDelete:
+                AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+                dialog.setTitle("Thông báo");
+                dialog.setMessage("Bạn có muốn xóa? ");
+                dialog.setPositiveButton("Có", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dbHelper.Delete(tickets.get(editPosition).getId());
+                        tickets.remove(editPosition);
+                        adapter.notifyDataSetChanged();
+                    }
+                });
+                dialog.setNegativeButton("Không", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+
+                    }
+                });
+                dialog.show();
         }
         return super.onContextItemSelected(item);
     }

@@ -95,6 +95,11 @@ public class DBHelper extends SQLiteOpenHelper {
         contentValues.put(THELOAI, ticket.isTheLoai());
         String where = ID + " = " + id;
         return myDB.update(TABLE_NAME, contentValues, where, null);
+    }
 
+    public long Delete(int position)
+    {
+        String where = ID +" = "+ position;
+        return myDB.delete(TABLE_NAME, where, null);
     }
 }

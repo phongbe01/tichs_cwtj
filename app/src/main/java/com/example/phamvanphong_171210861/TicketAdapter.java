@@ -5,22 +5,25 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 
-public class TicketAdapter extends BaseAdapter {
+public class TicketAdapter extends BaseAdapter implements Filterable {
 
     private ArrayList<Ticket> tickets;
     private Activity context;
 
-//    private RestaurantFilter filter;
-//    private ArrayList<Restaurant> filterlist;
+    private TicketFilter filter;
+    private ArrayList<Ticket> filterlist;
 
 
     public TicketAdapter(ArrayList<Ticket> tickets, Activity context) {
         this.tickets = tickets;
         this.context = context;
+        this.filterlist = tickets;
     }
 
     @Override
@@ -60,5 +63,48 @@ public class TicketAdapter extends BaseAdapter {
             textType.setText(t);
         }
         return view;
+    }
+
+    @Override
+    public Filter getFilter() {
+        if (filter == null)
+        {
+            filter = new TicketFilter();
+        }
+        return filter;
+    }
+
+    public class TicketFilter extends Filter {
+
+        @Override
+        protected FilterResults performFiltering(CharSequence constraint) {
+            FilterResults results = new FilterResults();
+            if (constraint != null && constraint.length() >0)
+            {
+                constraint = constraint.toString().toUpperCase();
+                ArrayList<Ticket> filters = new ArrayList<>();
+                for (int i =0; i < filterlist.size(); i++)
+                {
+                    if (filterlist.get(i).getGaDi().toUpperCase().contains(constraint))
+                    {
+                        Ticket ticket = new Ticket(filterlist.get(i).getId(), filterlist.get(i).getGaDen(), filterlist.get(i).getGaDi(), filterlist.get(i).getDonGia(), filterlist.get(i).isTheLoai());
+                        filters.add(ticket);
+                    }
+                }
+                results.count = filters.size();
+                results.values = filters;
+            } else
+            {
+                results.count = filterlist.size();
+                results.values = filterlist;
+            }
+            return results;
+        }
+
+        @Override
+        protected void publishResults(CharSequence constraint, FilterResults results) {
+            tickets = (ArrayList<Ticket>) results.values;
+            notifyDataSetChanged();
+        }
     }
 }
